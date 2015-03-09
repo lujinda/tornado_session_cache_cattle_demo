@@ -1,0 +1,37 @@
+{% extends "main.html" %}
+{% block body %}
+<form onsubmit="list_bucket(event)">
+    <input type='text' id="bucket" />
+    <button type="submit">列出</button>
+</form>
+<div id="file_info">
+</div>
+<script>
+    function list_bucket(e){
+        $.ajax({
+            type: 'GET',
+            url: '/api/bucket',
+            data: {'bucket': $('#bucket').val()},
+            beforeSend: function(){
+                $('#file_info').empty();
+            },
+            error: function(response){
+                alert('error');
+            },
+            success: function(response){
+                error = response['error'];
+                if (error){
+                    alert(error);
+                    return;
+                }
+                result = response['result'];
+                $file_info =  $('#file_info');
+                for (i in result){
+                    $file_info.append('<p>' + result[i]['key'] + '</p>');
+                }
+            }
+        });
+        e.preventDefault();
+    }
+</script>
+{% end %}
